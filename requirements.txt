@@ -1,0 +1,4 @@
+certifi==2015.04.28
+pymongo==3.0.2
+python3-memcached==1.44
+tornado==4.1
