@@ -23,7 +23,9 @@ class Driver(object):
 
     def get(self, session_id):
         self._setup_client()
-        raw_session = self.client.get(session_id.decode('utf-8'))
+        if isinstance(session_id, bytes):
+            session_id = session_id.decode('utf-8')
+        raw_session = self.client.get(session_id)
 
         return self._to_dict(raw_session)
 
@@ -44,7 +46,8 @@ class RedisDriver(Driver):
         self.settings = settings
 
     def _set_and_expire(self, session_id, pickled_session):
-        session_id = session_id.decode('utf-8')
+        if isinstance(session_id, bytes):
+            session_id = session_id.decode('utf-8')
         self.client.set(session_id, pickled_session)
         self.client.expire(session_id, self.EXPIRE_SECONDS)
 
@@ -65,7 +68,8 @@ class MemcachedDriver(Driver):
         self.settings = settings
 
     def _set_and_expire(self, session_id, pickled_session):
-        session_id = session_id.decode('utf-8')
+        if isinstance(session_id, bytes):
+            session_id = session_id.decode('utf-8')
         self.client.set(session_id, pickled_session, self.EXPIRE_SECONDS)
 
     def _create_client(self):
